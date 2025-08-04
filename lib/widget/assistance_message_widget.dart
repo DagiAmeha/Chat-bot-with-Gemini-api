@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class AssistanceMessageWidget extends StatelessWidget {
   const AssistanceMessageWidget({super.key, required this.message});
@@ -16,7 +17,7 @@ class AssistanceMessageWidget extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(18),
         ),
         child: message.isEmpty
