@@ -3,7 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:chat_bot/hive/boxes.dart';
 import 'package:chat_bot/hive/settings.dart';
-import 'package:chat_bot/providers/settings_providers.dart';
+import 'package:chat_bot/providers/settings_provider.dart';
 import 'package:chat_bot/widget/build_display_image.dart';
 import 'package:chat_bot/widget/settings_tile.dart';
 import 'package:flutter/material.dart';
@@ -42,21 +42,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-// get user data
-void getUserData(){
-  WidgetsBinding.instance!.addPostFrameCallback((_){
-    // get user data from box
-    final userBox = Boxes.getUser();
+  // get user data
+  void getUserData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // get user data from box
+      final userBox = Boxes.getUser();
 
-    if(userBox.isNotEmpty){
-      final user = userBox.getAt(0);
-      setState(() {
-        userImage = user!.image;
-        userName = user.name;
-      });
-    }
-  })
-}
+      if (userBox.isNotEmpty) {
+        final user = userBox.getAt(0);
+        setState(() {
+          userImage = user!.image;
+          userName = user.name;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,57 +82,73 @@ void getUserData(){
                 ),
               ),
 
-              const SizedBox(height: 20.0,),
+              const SizedBox(height: 20.0),
 
-              Text(userName, style: Theme.of(context).textTheme.titleLarge,)
-,
-             const SizedBox(height: 40.0,),
+              Text(userName, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 40.0),
 
-             ValueListenableBuilder<Box<Settings>>(valueListenable: Boxes.getSettings().listenable(), 
-             builder:(context, box, child) {
-               if(box.isEmpty){
-                return Column(
-                  children: [
-                   SettingsTile(icon: Icons.mic, title: 'Enable AI voice', value: false, onChanged: (value){
-                    final settingsProvider = context.read<SettingsProviders>();
-                    settingsProvider.toggleSpeak(
-                      value: value
+              ValueListenableBuilder<Box<Settings>>(
+                valueListenable: Boxes.getSettings().listenable(),
+                builder: (context, box, child) {
+                  if (box.isEmpty) {
+                    return Column(
+                      children: [
+                        SettingsTile(
+                          icon: Icons.mic,
+                          title: 'Enable AI voice',
+                          value: false,
+                          onChanged: (value) {
+                            final settingsProvider = context
+                                .read<SettingsProvider>();
+                            settingsProvider.toggleSpeak(value: value);
+                          },
+                        ),
+                        const SizedBox(height: 10.0),
+
+                        SettingsTile(
+                          icon: Icons.light_mode,
+                          title: 'Enable AI voice',
+                          value: false,
+                          onChanged: (value) {
+                            final settingsProvider = context
+                                .read<SettingsProvider>();
+                            settingsProvider.toggleDarkMode(value: value);
+                          },
+                        ),
+                      ],
                     );
-                   }),
-                                      const SizedBox(height: 10.0,),
-
-                   SettingsTile(icon: Icons.light_mode, title: 'Enable AI voice', value: false, onChanged: (value){
-                    final settingsProvider = context.read<SettingsProviders>();
-                    settingsProvider.toggleDarkMode(
-                      value: value
+                  } else {
+                    final settings = box.getAt(0);
+                    return Column(
+                      children: [
+                        SettingsTile(
+                          icon: Icons.mic,
+                          title: 'Enable AI voice',
+                          value: settings!.shouldSpeak,
+                          onChanged: (value) {
+                            final settingsProvider = context
+                                .read<SettingsProvider>();
+                            settingsProvider.toggleSpeak(value: value);
+                          },
+                        ),
+                        const SizedBox(height: 10.0),
+                        SettingsTile(
+                          icon: settings.isDarkMode
+                              ? Icons.dark_mode
+                              : Icons.light_mode,
+                          title: 'Theme',
+                          value: settings.isDarkMode,
+                          onChanged: (value) {
+                            final settingsProvider = context
+                                .read<SettingsProvider>();
+                            settingsProvider.toggleDarkMode(value: value);
+                          },
+                        ),
+                      ],
                     );
-                   })
-
-                   
-                  ],
-                );
-               }else {
-                final settings = box.getAt(0);
-                return Column(
-                  children: [
-                    SettingsTile(icon: Icons.mic, title: 'Enable AI voice', value: settings!.shouldSpeak, onChanged: (value){
-                    final settingsProvider = context.read<SettingsProviders>();
-                    settingsProvider.toggleSpeak(
-                      value: value
-                    );
-                   }),
-                   const SizedBox(height: 10.0,),
-                   SettingsTile(icon: settings.isDarkMode? Icons.dark_mode: Icons.light_mode, title: 'Theme', value: settings.isDarkMode, onChanged: (value){
-                    final settingsProvider = context.read<SettingsProviders>();
-                    settingsProvider.toggleDarkMode(
-                      value: value
-                    );
-                   })
-
-                  ],
-                );
-               }
-             },)
+                  }
+                },
+              ),
             ],
           ),
         ),

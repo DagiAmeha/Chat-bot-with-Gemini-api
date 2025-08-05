@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui_web';
 
 import 'package:chat_bot/util/assets_maneger.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class BuildDisplayImage extends StatelessWidget {
           bottom: 0.0,
           right: 0.0,
           child: InkWell(
-            onTap: () {},
+            onTap: onPressed,
             child: const CircleAvatar(
               backgroundColor: Colors.blue,
               radius: 20.0,
